@@ -38,26 +38,26 @@ internal class Day08 : Day
             var sets = new HashSet<char>[10];
             
             // easy ones
-            sets[1] = samples[2].First();
-            sets[7] = samples[3].First();
-            sets[4] = samples[4].First();
-            sets[8] = samples[7].First();
+            sets[1] = samples[2].Single();
+            sets[7] = samples[3].Single();
+            sets[4] = samples[4].Single();
+            sets[8] = samples[7].Single();
             
             // "9" + "4" == "9"
             // "0" + "1" == "0", "0" + "6" <> "6"
-            sets[9] = samples[6].First(x => x.SetEquals(x.Union(sets[4])));
-            sets[0] = samples[6].Where(x => !x.SetEquals(sets[9])).First(x => x.SetEquals(x.Union(sets[1])));
-            sets[6] = samples[6].Where(x => !x.SetEquals(sets[9])).First(x => !x.SetEquals(sets[0]));
+            sets[9] = samples[6].Single(x => x.SetEquals(x.Union(sets[4])));
+            sets[0] = samples[6].Where(x => !x.SetEquals(sets[9])).Single(x => x.SetEquals(x.Union(sets[1])));
+            sets[6] = samples[6].Where(x => !x.SetEquals(sets[9])).Single(x => !x.SetEquals(sets[0]));
             
             // "3" + "1" == "3"
             // "5" + "9" == "9", "2" + "9" <> "9"
-            sets[3] = samples[5].First(x => x.SetEquals(x.Union(sets[1])));
-            sets[5] = samples[5].Where(x => !x.SetEquals(sets[3])).First(x => sets[9].SetEquals(x.Union(sets[9])));
-            sets[2] = samples[5].Where(x => !x.SetEquals(sets[3])).First(x => !x.SetEquals(sets[5]));
+            sets[3] = samples[5].Single(x => x.SetEquals(x.Union(sets[1])));
+            sets[5] = samples[5].Where(x => !x.SetEquals(sets[3])).Single(x => sets[9].SetEquals(x.Union(sets[9])));
+            sets[2] = samples[5].Where(x => !x.SetEquals(sets[3])).Single(x => !x.SetEquals(sets[5]));
 
             var index = sets.Select((x, pos) => new {value = x, number = pos})
                 .ToDictionary(x => x.value, x => x.number, HashSet<char>.CreateSetComparer());
-            result += digits.Aggregate<HashSet<char>?, long>(0, (current, digit) => 10 * current + index[digit]);
+            result += digits.Aggregate<HashSet<char>, long>(0, (current, digit) => 10 * current + index[digit]);
         }
 
         return result;

@@ -16,11 +16,11 @@ internal static class Program
         foreach (var dayNumber in dayNumbers)
         {
             Console.WriteLine($"Running day {dayNumber}...");
-            var classToRun = days.First(d => d.Name[3..].EndsWith(dayNumber.ToString()));
-            var day = Activator.CreateInstance(classToRun) as Day;
-            if (day == null) return;
+            var classToRun = days.Single(d => d.Name[3..].EndsWith(dayNumber.ToString()));
+            if (Activator.CreateInstance(classToRun) is not Day day) return;
             day.DayNumber = dayNumber;
             day.Run();
+            Console.WriteLine();
         }
     }
 }
