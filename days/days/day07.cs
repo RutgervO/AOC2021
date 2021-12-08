@@ -16,7 +16,7 @@ internal class Day07 : Day
         var inputNumbers = GetListOfIntegers(inputName);
 
         var counts = new DefaultDictionary<int, long>();
-        var first = 0;
+        const int first = 0;
         var last = 0;
         foreach (var number in inputNumbers)
         {
@@ -28,6 +28,7 @@ internal class Day07 : Day
         for (var target = first; target <= last; target++)
         {
             var cost = counts.Select(x => GetCost(target, x.Key, x.Value, part)).Sum();
+            if (cost > cheapest) break;
             cheapest = Math.Min(cheapest, cost);
         }
         return cheapest;
@@ -41,9 +42,9 @@ internal class Day07 : Day
         if (dist == 0)
             return 0;
         long result = 0;
-        for (var i = 1; i <= dist; i++)
+        for (; dist > 0; dist--)
         {
-            result += i * number;
+            result += dist * number;
         }
         return result;
     }

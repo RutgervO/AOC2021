@@ -20,12 +20,13 @@ internal class Day01 : Day
             .Zip(inputValues.Skip(1), (one, two) => one + two)
             .Zip(inputValues, (oneTwo, three) => oneTwo + three));
     }
-    
-    int CountLarger(IEnumerable<int> input)
+
+    private static int CountLarger(IEnumerable<int> input)
     {
-        return input
+        var enumerable = input as int[] ?? input.ToArray();
+        return enumerable
             .Skip(1)
-            .Zip(input, (curr, prev) => curr > prev)
+            .Zip(enumerable, (curr, prev) => curr > prev)
             .Count(x => x);
     }
 }

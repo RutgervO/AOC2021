@@ -1,10 +1,10 @@
 // ReSharper disable once CheckNamespace
 namespace aoc;
 
-abstract class Day
+internal abstract class Day
 {
     public int DayNumber { get; set; }
-    private List<(string Title, Func<long> Action, long? TestResult)> Sequence { get; set; }
+    private List<(string Title, Func<long> Action, long? TestResult)> Sequence { get; }
     
     public abstract long RunPart(int part, string inputName);
     protected abstract void SetSequence();
@@ -36,11 +36,11 @@ abstract class Day
             {
                 if (result == testResult)
                 {
-                    Out("CORRECT!");
+                    Out("[PASS]");
                 }
                 else
                 {
-                    Out($"INCORRECT! Expected: {testResult}\n");
+                    Out($"[FAIL! Expected: {testResult}]\n");
                     return;
                 }
             }
@@ -55,7 +55,7 @@ abstract class Day
 
     protected static List<string> GetListOfLines(string fileName)
     {
-        var inputLines = File.ReadLines(@"../../../input/" + fileName).ToList();
+        var inputLines = File.ReadLines($@"../../../input/{fileName}").ToList();
         // Out($"[{fileName}: {inputLines.Count} line{(inputLines.Count != 1 ? "s" : "")}] ");
         return inputLines;
     }
@@ -80,10 +80,20 @@ public class DefaultDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TV
         get
         {
             if (TryGetValue(key, out var val)) return val;
-            val = new TValue();
+            val = new();
             Add(key, val);
             return val;
         }
         set => base[key] = value;
+    }
+}
+
+public static class EnumerableExtensions
+{
+    public static IEnumerable<IEnumerable<T>> Transpose<T>(this IEnumerable<IEnumerable<T>> l)
+    {
+        return l.SelectMany(inner => inner.Select((item, index) => new { item, index }))
+            .GroupBy(i => i.index, i => i.item)
+            .Select(g => g.ToList());
     }
 }

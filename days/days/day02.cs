@@ -38,7 +38,7 @@ internal class Day02 : Day
         private int _horizontal;
         private int _depth;
 
-        private readonly Dictionary<string, Tuple<int, int>> _directions = new Dictionary<string, Tuple<int, int>>()
+        private readonly Dictionary<string, Tuple<int, int>> _directions = new()
         {
             {"forward", new Tuple<int, int>(1, 0)},
             {"up", new Tuple<int, int>(0, -1)},
@@ -74,7 +74,7 @@ internal class Day02 : Day
         private int _depth;
         private int _aim;
 
-        private readonly Dictionary<string, Tuple<int, int>> _directions = new Dictionary<string, Tuple<int, int>>()
+        private readonly Dictionary<string, Tuple<int, int>> _directions = new()
         {
             {"forward", new Tuple<int, int>(1, 0)},
             {"up", new Tuple<int, int>(0, -1)},
