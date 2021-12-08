@@ -62,6 +62,12 @@ abstract class Day
         var inputLines = GetListOfLines(fileName);
         return inputLines[0].Split(',').ToList().ConvertAll(int.Parse);
     }
+    
+    protected List<int> GetListOfLinesAsInt(string fileName)
+    {
+        var inputLines = GetListOfLines(fileName);
+        return inputLines.ConvertAll(int.Parse);
+    }
 }
 
 public class DefaultDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TValue : new() where TKey : notnull
