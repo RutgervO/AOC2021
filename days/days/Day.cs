@@ -29,41 +29,44 @@ abstract class Day
     {
         foreach (var (title, action, testResult) in Sequence)
         {
-            Out($"\nRunning day {DayNumber} {title}...");
+            Out($"Day {DayNumber} {title}: ");
             long? result = action();
-            Out($"Result: {result}");
-            if (testResult is null) continue;
-            if (result == testResult)
+            Out($"Result: {result} ");
+            if (testResult is not null)
             {
-                Out("Output is CORRECT. PASS!");
+                if (result == testResult)
+                {
+                    Out("CORRECT!");
+                }
+                else
+                {
+                    Out($"INCORRECT! Expected: {testResult}\n");
+                    return;
+                }
             }
-            else
-            {
-                Out($"Output is INCORRECT. Expected: {testResult}");
-                return;
-            }
+            Out("\n");
         }
     }
 
-    public void Out(string output)
+    private static void Out(string output)
     {
-        Console.WriteLine(output);
+        Console.Write(output);
     }
 
-    protected List<string> GetListOfLines(string fileName)
+    protected static List<string> GetListOfLines(string fileName)
     {
         var inputLines = File.ReadLines(@"../../../input/" + fileName).ToList();
-        Console.WriteLine($"Input {fileName}: {inputLines.Count} line{(inputLines.Count != 1 ? "s" : "")} read.");
+        // Out($"[{fileName}: {inputLines.Count} line{(inputLines.Count != 1 ? "s" : "")}] ");
         return inputLines;
     }
 
-    protected List<int> GetListOfIntegers(string fileName)
+    protected static List<int> GetListOfIntegers(string fileName)
     {
         var inputLines = GetListOfLines(fileName);
         return inputLines[0].Split(',').ToList().ConvertAll(int.Parse);
     }
     
-    protected List<int> GetListOfLinesAsInt(string fileName)
+    protected static List<int> GetListOfLinesAsInt(string fileName)
     {
         var inputLines = GetListOfLines(fileName);
         return inputLines.ConvertAll(int.Parse);
