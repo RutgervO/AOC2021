@@ -36,11 +36,11 @@ internal abstract class Day
             {
                 if (result == testResult)
                 {
-                    Out("[PASS]");
+                    Out("✓");
                 }
                 else
                 {
-                    Out($"[FAIL! Expected: {testResult}]\n");
+                    Out($"❌ Expected: {testResult}\n");
                     return;
                 }
             }
@@ -96,4 +96,6 @@ public static class EnumerableExtensions
             .GroupBy(i => i.index, i => i.item)
             .Select(g => g.ToList());
     }
+    public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> self)       
+        => self.Select((item, index) => (item, index));
 }

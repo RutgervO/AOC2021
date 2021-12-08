@@ -15,22 +15,19 @@ internal class Day03 : Day
     {
         var inputLines = GetListOfLines(inputName).ToArray();
 
-        if (part == 1)
+        if (part != 1) return Part2Value(true) * Part2Value(false);
+        
+        var gamma = 0;
+        var epsilon = 0;
+        foreach (var bits in inputLines.Transpose())
         {
-            var gamma = 0;
-            var epsilon = 0;
-            foreach (var bits in inputLines.Transpose())
-            {
-                var enumerable = bits as char[] ?? bits.ToArray();
-                var winner = (enumerable.Count(x => x == '1') > enumerable.Count(x => x == '0')) ? 1 : 0;
-                gamma = 2 * gamma + winner;
-                epsilon = 2 * epsilon + 1 - winner;
-            }
-            return gamma * epsilon;
+            var enumerable = bits as char[] ?? bits.ToArray();
+            var winner = (enumerable.Count(x => x == '1') > enumerable.Count(x => x == '0')) ? 1 : 0;
+            gamma = 2 * gamma + winner;
+            epsilon = 2 * epsilon + 1 - winner;
         }
-        
-        return Part2Value(true) * Part2Value(false);
-        
+        return gamma * epsilon;
+
         int Part2Value(bool most)
         {
             var candidates = Enumerable.Range(0, inputLines.Length).ToList();
