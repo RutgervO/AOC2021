@@ -31,7 +31,7 @@ internal abstract class Day
         {
             Out($"Day {DayNumber} {title}: ");
             long? result = action();
-            Out($"Result: {result} ");
+            Out($"{result} ");
             if (testResult is not null)
             {
                 if (result == testResult)
