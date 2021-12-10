@@ -53,7 +53,7 @@ internal class Day09 : Day
                                     var value = board[newY][newX];
                                     if (value <= current || value >= '9') continue;
                                     members.Add((newX, newY));
-                                    newMembers += 1;
+                                    newMembers++;
                                 }
                             }
                         }
