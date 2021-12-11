@@ -13,21 +13,21 @@ internal class Day11 : Day
 
     public override long RunPart(int part, string inputName)
     {
-        var board = new IntBoard(GetListOfLines(inputName));
+        var board = new Board2D<int>(GetListOfLines(inputName), int.Parse);
         long result = 0;
         for (var step = 1; part == 2 || step <= 100; step++)
         {
             board.ApplyFunctionToAllCells(x => x + 1);
-            List<(int X, int Y)> flashers;
+            List<Coordinate> flashers;
             do
             {
-                flashers = board.GetCoordinatesThatMatch(x => x > 9).ToList();
+                flashers = board.CoordinatesThatMatch(x => x > 9).ToList();
                 board.ApplyValueToCoordinates(0, flashers);
-                board.ApplyFunctionToCoordinates(x => x == 0 ? 0 : x + 1, board.GetNeighbours(flashers));
+                board.ApplyFunctionToCoordinates(x => x == 0 ? 0 : x + 1, board.Neighbours(flashers));
                 result += flashers.Count;
             } while (flashers.Count > 0);
 
-            if (part == 2 && board.GetAllValues().Sum() == 0)
+            if (part == 2 && board.AllValues().Sum() == 0)
                 return step;
         }
         return result;
