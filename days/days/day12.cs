@@ -19,50 +19,38 @@ internal class Day12 : Day
     {
         var lines = GetListOfLines(inputName);
         var graph = new NamedNodeGraph();
-        foreach (var line in lines)
+        foreach (var names in lines.Select(line => line.Split('-').ToList()))
         {
-            var name1 = line.Split('-').First();
-            var name2 = line.Split('-').Last();
-            graph.AddNodesAndEdge(name1, name2);
+            graph.AddNodesAndEdge(names.First(), names.Last());
         }
 
-        return GetRoutes(part, new List<NamedNode>{graph.Get("start")}).Count();
+        return GetRoutes(part, new HashSet<NamedNode>(), false, graph.Get("start"));
     }
 
-    private static IEnumerable<List<NamedNode>> GetRoutes(int part, List<NamedNode> visited)
+    private static int GetRoutes(int part, IReadOnlySet<NamedNode> visitedOnce, bool visitedTwice, NamedNode newNode)
     {
-        var results = new List<List<NamedNode>>();
-        var current = visited.Last();
-        if (current.Name == "end")
+        if (newNode.Name == "end") return 1;
+        var isLowerCaseNode = char.IsLower(newNode.Name[0]);
+        var newVisitedOnce = new HashSet<NamedNode>(visitedOnce);
+        if (visitedOnce.Contains(newNode))
         {
-            results.Add(visited);
+            if (part == 1 || visitedTwice)
+            {
+                return 0;
+            }
+            visitedTwice = true;
         }
         else
         {
-            var visitedDupes = visited
-                .Select(x => x.Name)
-                .Where(x => char.IsLower(x[0]))
-                .GroupBy(x => x)
-                .Where(x => x.Count() > 1)
-                .Select(x => x.Key)
-                .ToList();
-            
-            foreach (var node in current.Connections.Where(x=>x.Name != "start" && !visitedDupes.Contains(x.Name)))
+            if (isLowerCaseNode)
             {
-                var potential = visited.Append(node).ToList();
-                var newDupes = potential
-                    .Select(x => x.Name)
-                    .Where(x => char.IsLower(x[0]))
-                    .GroupBy(x => x)
-                    .Where(x => x.Count() > 1)
-                    .Select(x => x.Key)
-                    .Count();
-                if (newDupes < part)
-                {
-                    results.AddRange(GetRoutes(part, potential.ToList()));
-                }
+                newVisitedOnce.Add(newNode);
             }
         }
-        return results;
+
+        return newNode.Connections
+            .Where(x => x.Name != "start")
+            .Select(x => GetRoutes(part, newVisitedOnce, visitedTwice, x))
+            .Sum();
     }
 }
