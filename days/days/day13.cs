@@ -26,14 +26,15 @@ internal class Day13 : Day
 
         foreach (var (dir, pos) in commands)
         {
-            if (dir == 'x')
-                board = board
-                    .Select(x => new Coordinate(x.X > pos ? 2 * pos - x.X : x.X, x.Y))
-                    .ToHashSet();
-            else
-                board = board
-                    .Select(x => new Coordinate(x.X, x.Y > pos ? 2 * pos - x.Y : x.Y))
-                    .ToHashSet();
+            var posX = dir == 'x' ? pos : int.MaxValue;
+            var posY = dir == 'y' ? pos : int.MaxValue;
+            
+            board = board
+                .Select(x => new Coordinate(
+                    x.X > posX ? 2 * pos - x.X : x.X,
+                    x.Y > posY ? 2 * pos - x.Y : x.Y))
+                .ToHashSet();
+            
             if (part==1) return board.Count;
         }
 
