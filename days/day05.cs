@@ -1,5 +1,6 @@
-﻿// ReSharper disable once CheckNamespace
-namespace aoc;
+﻿using AOC.util;
+
+namespace AOC.days;
 
 internal class Day05 : Day
 {

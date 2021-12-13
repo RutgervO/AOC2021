@@ -1,5 +1,4 @@
-// ReSharper disable once CheckNamespace
-namespace aoc;
+namespace AOC.util;
 
 public class Board2D<T> where T : IFormattable, new()
 {

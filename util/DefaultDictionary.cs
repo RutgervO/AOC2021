@@ -1,5 +1,4 @@
-// ReSharper disable once CheckNamespace
-namespace aoc;
+namespace AOC.util;
 
 public class DefaultDictionary<TKey, TValue> : Dictionary<TKey, TValue> where TValue : new() where TKey : notnull
 {

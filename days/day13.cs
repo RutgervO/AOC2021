@@ -1,5 +1,6 @@
-// ReSharper disable once CheckNamespace
-namespace aoc;
+using AOC.util;
+
+namespace AOC.days;
 
 internal class Day13 : Day
 {
@@ -13,39 +14,39 @@ internal class Day13 : Day
     public override long RunPart(int part, string inputName)
     {
         var lines = GetListOfLines(inputName);
-        var board = lines
+        var sheet = lines
             .TakeWhile(x => x.Length > 0)
             .Select(x => x.Split(','))
             .Select(x => new Coordinate(int.Parse(x[0]), int.Parse(x[1])))
             .ToHashSet();
-        var commands = lines
-            .Skip(board.Count + 1)
+        var folds = lines
+            .Skip(sheet.Count + 1)
             .Select(x => x.Split('=', ' '))
             .Select(x => new Tuple<char, int>(x[2][0], int.Parse(x[3])))
             .ToList();
 
-        foreach (var (dir, pos) in commands)
+        foreach (var (axis, pos) in folds)
         {
-            var posX = dir == 'x' ? pos : int.MaxValue;
-            var posY = dir == 'y' ? pos : int.MaxValue;
+            var posX = axis == 'x' ? pos : int.MaxValue;
+            var posY = axis == 'y' ? pos : int.MaxValue;
             
-            board = board
+            sheet = sheet
                 .Select(x => new Coordinate(
                     x.X > posX ? 2 * pos - x.X : x.X,
                     x.Y > posY ? 2 * pos - x.Y : x.Y))
                 .ToHashSet();
             
-            if (part==1) return board.Count;
+            if (part==1) return sheet.Count;
         }
 
-        var maxX = board.Select(x => x.X).Max();
-        var maxY = board.Select(x => x.Y).Max();
+        var maxX = sheet.Select(x => x.X).Max();
+        var maxY = sheet.Select(x => x.Y).Max();
         for (var y = 0; y <= maxY; y++)
         {
             Console.WriteLine();
             for (var x = 0; x <= maxX; x++)
             {
-                Console.Write(board.Contains(new Coordinate(x, y)) ? '#' : ' ');
+                Console.Write(sheet.Contains(new Coordinate(x, y)) ? '#' : ' ');
             }
         }
 

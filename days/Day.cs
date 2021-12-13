@@ -1,5 +1,4 @@
-// ReSharper disable once CheckNamespace
-namespace aoc;
+namespace AOC.days;
 
 internal abstract class Day
 {
@@ -55,8 +54,7 @@ internal abstract class Day
 
     protected static List<string> GetListOfLines(string fileName)
     {
-        var inputLines = File.ReadLines($@"../../../input/{fileName}").ToList();
-        // Out($"[{fileName}: {inputLines.Count} line{(inputLines.Count != 1 ? "s" : "")}] ");
+        var inputLines = File.ReadLines($@"input/{fileName}").ToList();
         return inputLines;
     }
 
