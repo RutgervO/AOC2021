@@ -15,34 +15,30 @@ internal class Day14 : Day
     public override long RunPart(int part, string inputName)
     {
         var lines = GetListOfLines(inputName);
-
-        var rules = lines
-            .Skip(2)
+        var startLetters = lines[0].ToList();
+        var rules = lines.Skip(2)
             .Select(x => x.Split(" -> "))
-            .ToDictionary(x => new Tuple<char, char>(x[0][0], x[0][1]), x => x[1][0]);
+            .ToDictionary(x => (x[0][0], x[0][1]), x => x[1][0]);
 
-        var countLetters = new DefaultDictionary<char, long>();
-        var countPairs = new DefaultDictionary<Tuple<char,char>, long>();
-        
-        var first = lines[0][0];
-        foreach (var second in lines[0][1..])
-        {
-            countLetters[first] += 1;
-            countPairs[new Tuple<char, char>(first, second)] += 1;
-            first = second;
-        }
-        countLetters[first] += 1;
+        var countLetters = new DefaultDictionary<char, long>(
+            startLetters.GroupBy(x => x, _ => (long) 1, (x, y) => (K:x, V:y.Sum()))
+                .ToDictionary(x => x.K, x => x.V));
+
+        var countPairs = new DefaultDictionary<(char a, char b), long>(
+            startLetters.Zip(startLetters.Skip(1), (a, b) => (T:(a, b), V:(long)1))
+                .GroupBy(x => x.T, x => x.V, (t, v) => (K:t, V:v.Sum()))
+                .ToDictionary(x => x.K, x => x.V));
         
         for (var step = 0; step < (part == 1 ? 10 : 40); step++)
         {
-            var listOfPairs = countPairs.ToList();
+            var previousPairs = countPairs.ToList();
             countPairs.Clear();
-            foreach (var (pair, count) in listOfPairs)
+            foreach (var (pair, count) in previousPairs)
             {
                 if (rules.TryGetValue(pair, out var insert))
                 {
-                    countPairs[new Tuple<char, char>(pair.Item1, insert)] += count;
-                    countPairs[new Tuple<char, char>(insert, pair.Item2)] += count;
+                    countPairs[(pair.Item1, insert)] += count;
+                    countPairs[(insert, pair.Item2)] += count;
                     countLetters[insert] += count;
                 }
                 else
@@ -52,7 +48,7 @@ internal class Day14 : Day
             }
         }
 
-        var counts = countLetters.Select(x => x.Value).OrderBy(x => x).ToList();
-        return counts.Last() - counts.First();
+        var counts = countLetters.Select(x => x.Value).ToList();
+        return counts.Max() - counts.Min();
     }
 }
