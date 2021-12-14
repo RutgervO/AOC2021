@@ -16,50 +16,43 @@ internal class Day14 : Day
     {
         var lines = GetListOfLines(inputName);
 
-        var pairs = lines
+        var rules = lines
             .Skip(2)
             .Select(x => x.Split(" -> "))
             .ToDictionary(x => new Tuple<char, char>(x[0][0], x[0][1]), x => x[1][0]);
 
-        var polymer = new DefaultDictionary<Tuple<char,char>, long>();
+        var countLetters = new DefaultDictionary<char, long>();
+        var countPairs = new DefaultDictionary<Tuple<char,char>, long>();
+        
         var first = lines[0][0];
-        foreach (var current in lines[0][1..])
+        foreach (var second in lines[0][1..])
         {
-            polymer[new Tuple<char, char>(first, current)] += 1;
-            first = current;
+            countLetters[first] += 1;
+            countPairs[new Tuple<char, char>(first, second)] += 1;
+            first = second;
         }
+        countLetters[first] += 1;
         
         for (var step = 0; step < (part == 1 ? 10 : 40); step++)
         {
-            var newPolymer = new DefaultDictionary<Tuple<char, char>, long>();
-            foreach (var (pair, count) in polymer)
+            var listOfPairs = countPairs.ToList();
+            countPairs.Clear();
+            foreach (var (pair, count) in listOfPairs)
             {
-                if (!pairs.TryGetValue(pair, out var insert))
+                if (rules.TryGetValue(pair, out var insert))
                 {
-                    newPolymer[pair] += count;
+                    countPairs[new Tuple<char, char>(pair.Item1, insert)] += count;
+                    countPairs[new Tuple<char, char>(insert, pair.Item2)] += count;
+                    countLetters[insert] += count;
                 }
                 else
                 {
-                    newPolymer[new Tuple<char, char>(pair.Item1, insert)] += count;
-                    newPolymer[new Tuple<char, char>(insert, pair.Item2)] += count;
+                    countPairs[pair] += count;
                 }
             }
-
-            polymer.Clear();
-            foreach (var (pair, count) in newPolymer)
-            {
-                polymer[pair] = count;
-            }
         }
 
-        var letters = new DefaultDictionary<char, long>();
-        foreach (var ((item1, item2), count) in polymer)
-        {
-            letters[item1] += count;
-            letters[item2] += count;
-        }
-
-        var counts = letters.Select(x => x.Value).OrderBy(x => x).ToList();
-        return (counts.Last() - counts.First() + 1) / 2;
+        var counts = countLetters.Select(x => x.Value).OrderBy(x => x).ToList();
+        return counts.Last() - counts.First();
     }
 }
