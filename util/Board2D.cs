@@ -2,9 +2,9 @@ namespace AOC.util;
 
 public class Board2D<T> where T : IFormattable, new()
 {
-    private readonly DefaultDictionary<Coordinate, T> _board;
-    public int Width { get; }
-    public int Height { get; }
+    public DefaultDictionary<Coordinate, T> Board;
+    public int Width { get; private set; }
+    public int Height { get; private set; }
     public bool DiagonalNeighbours { get; }
     public (int dx, int dy)[] NeighbourDeltas { get; }
 
@@ -13,15 +13,27 @@ public class Board2D<T> where T : IFormattable, new()
         var input = lines.ToArray();
         Width = input.First().Length;
         Height = input.Length;
-        _board = new DefaultDictionary<Coordinate, T>();
+        Board = new DefaultDictionary<Coordinate, T>();
         foreach (var coordinate in AllCoordinates())
-            _board[coordinate] = parser(input[coordinate.Y][coordinate.X].ToString());
+            Board[coordinate] = parser(input[coordinate.Y][coordinate.X].ToString());
         DiagonalNeighbours = diagonalNeighbours;
         NeighbourDeltas = DiagonalNeighbours
             ? new (int dx, int dy)[] {(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)}
-            : new (int dx, int dy)[] {(0, -1), (-1, 0), (1, 0), (0, 1)};
+            : new (int dx, int dy)[] {(0, 1), (1, 0), (0, -1), (-1, 0)};
     }
 
+    public void SetDimensions(int width, int height)
+    {
+        Width = width;
+        Height = height;
+        // ToDo remove any coordinates that are out of bounds now
+    }
+    
+    public T Get(Coordinate coordinate)
+    {
+        return Board[coordinate];
+    }
+    
     IEnumerable<Coordinate> AllCoordinates()
     {
         for (var x = 0; x < Width; x++)
@@ -36,12 +48,12 @@ public class Board2D<T> where T : IFormattable, new()
     public void ApplyFunctionToAllCells(Func<T, T> f)
     {
         foreach (var coordinate in AllCoordinates())
-            _board[coordinate] = f(_board[coordinate]);
+            Board[coordinate] = f(Board[coordinate]);
     }
 
     public IEnumerable<Coordinate> CoordinatesThatMatch(Func<T, bool> f)
     {
-        return AllCoordinates().Where(coordinate => f(_board[coordinate]));
+        return AllCoordinates().Where(coordinate => f(Board[coordinate]));
     }
 
     public bool IsOnBoard(Coordinate coordinate)
@@ -67,18 +79,18 @@ public class Board2D<T> where T : IFormattable, new()
     public void ApplyValueToCoordinates(T value, IEnumerable<Coordinate> coordinates)
     {
         foreach (var coordinate in coordinates)
-            _board[coordinate] = value;
+            Board[coordinate] = value;
     }
 
     public void ApplyFunctionToCoordinates(Func<T, T> f, IEnumerable<Coordinate> coordinates)
     {
         foreach (var coordinate in coordinates)
-            _board[coordinate] = f(_board[coordinate]);
+            Board[coordinate] = f(Board[coordinate]);
     }
 
     public IEnumerable<T> AllValues()
     {
-        return AllCoordinates().Select(coordinate => _board[coordinate]);
+        return AllCoordinates().Select(coordinate => Board[coordinate]);
     }
 
     public void Print(string? title = null, Func<T, bool>? highlight = null)
@@ -94,7 +106,7 @@ public class Board2D<T> where T : IFormattable, new()
         {
             for (var x = 0; x < Width; x++)
             {
-                var value = _board[new Coordinate(x, y)];
+                var value = Board[new Coordinate(x, y)];
                 var highlighted = highlight is not null && highlight(value);
                 if (highlighted)
                 {
