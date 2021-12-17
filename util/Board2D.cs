@@ -34,7 +34,7 @@ public class Board2D<T> where T : IFormattable, new()
         return Board[coordinate];
     }
     
-    IEnumerable<Coordinate> AllCoordinates()
+    public IEnumerable<Coordinate> AllCoordinates()
     {
         for (var x = 0; x < Width; x++)
         {

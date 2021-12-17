@@ -21,16 +21,13 @@ internal class Day15 : Day
             var width = board.Width;
             var height = board.Height;
             board.SetDimensions(width * 5, height * 5);
-            for (var y = 0; y < height * 5; y++)
+            foreach (var (x, y) in board.AllCoordinates())
             {
-                for (var x = 0; x < width * 5; x++)
+                if (x >= width || y >= height)
                 {
-                    if (x >= width || y >= height)
-                    {
-                        var factor = x / width + y / height;
-                        board.Board[new Coordinate(x, y)] =
-                            1 + (board.Get(new Coordinate(x % width, y % width)) + factor - 1) % 9;
-                    }
+                    var factor = x / width + y / height;
+                    board.Board[new Coordinate(x, y)] =
+                        1 + (board.Get(new Coordinate(x % width, y % width)) + factor - 1) % 9;
                 }
             }
         }
@@ -53,29 +50,27 @@ internal class Day15 : Day
                 var currentValue = board.Get(current);
                 foreach (var neighbour in board.Neighbours(current))
                 {
+                    var neighbourValue = board.Get(neighbour);
+                    var viaMeNeighbourCost = currentCost + neighbourValue;
+                    if (costs.ContainsKey(neighbour))
                     {
-                        var neighbourValue = board.Get(neighbour);
-                        var viaMeNeighbourCost = currentCost + neighbourValue;
-                        if (costs.ContainsKey(neighbour))
-                        {
-                            var neighbourCost = costs[neighbour];
-                            if (viaMeNeighbourCost < neighbourCost)
-                            {
-                                costs[neighbour] = viaMeNeighbourCost;
-                            }
-                            else
-                            {
-                                if (neighbourCost + currentValue < currentCost)
-                                {
-                                    currentCost = neighbourCost + currentValue;
-                                    costs[current] = currentCost;
-                                }
-                            }
-                        }
-                        else
+                        var neighbourCost = costs[neighbour];
+                        if (viaMeNeighbourCost < neighbourCost)
                         {
                             costs[neighbour] = viaMeNeighbourCost;
                         }
+                        else
+                        {
+                            if (neighbourCost + currentValue < currentCost)
+                            {
+                                currentCost = neighbourCost + currentValue;
+                                costs[current] = currentCost;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        costs[neighbour] = viaMeNeighbourCost;
                     }
                 }
             }
