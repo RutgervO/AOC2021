@@ -22,7 +22,7 @@ internal class Day17 : Day
             new Coordinate(int.Parse(split[2]), int.Parse(split[5])));
 
         var maxY = int.MinValue;
-        const int range = 500;
+        int range = Math.Max(box.MaxX, box.MaxY);
         var hits = 0;
 
         foreach (var dx in Enumerable.Range(1, range))

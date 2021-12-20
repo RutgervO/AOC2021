@@ -6,7 +6,7 @@ public class Board2D<T> where T : IFormattable, new()
     public int Width { get; private set; }
     public int Height { get; private set; }
     public bool DiagonalNeighbours { get; }
-    public (int dx, int dy)[] NeighbourDeltas { get; }
+    public (int dx, int dy)[] NeighbourDeltas { get; set; }
 
     public Board2D(IEnumerable<string> lines, Func<string, T> parser, bool diagonalNeighbours = true)
     {
